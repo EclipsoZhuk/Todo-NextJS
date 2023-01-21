@@ -7,13 +7,17 @@ import useFetchTodos from '@/hooks/useFetchTodos';
 
 import TodoCard from './TodoCard';
 
+interface ITodosKey {
+    [key: string]: any;
+}
+
 export default function UserDashboard() {
     const { currentUser } = useAuth();
     const { todos, setTodos, loading } = useFetchTodos();
 
     const [title, setTitle] = useState<string>('');
     const [edit, setEdit] = useState<string>('');
-    const [editedValue, setEditedValue] = useState<string>('');
+    const [editedValue, setEditedValue] = useState<any>('');
 
     async function handleAddTodo() {
         if (!title) return;
@@ -63,7 +67,7 @@ export default function UserDashboard() {
         return () => {
             if (todos) {
                 setEdit(todoKey);
-                setEditedValue(todos[todoKey]);
+                setEditedValue(todos[todoKey as keyof typeof todos]);
             }
         };
     }
@@ -114,7 +118,7 @@ export default function UserDashboard() {
             {!loading && (
                 <>
                     {todos &&
-                        Object.keys(todos).map((todoId: string) => {
+                        Object.keys(todos).map(todoId => {
                             return (
                                 <TodoCard
                                     handleEditTodo={handleEditTodo}
@@ -126,7 +130,7 @@ export default function UserDashboard() {
                                     setEditedValue={setEditedValue}
                                     handleDelete={handleDelete}
                                 >
-                                    {todos[todoId]}
+                                    {todos[todoId as keyof typeof todos]}
                                 </TodoCard>
                             );
                         })}
